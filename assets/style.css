@@ -32,48 +32,19 @@ a:hover {
 }
 
 .site-header-inner {
-  /* すでに書いてあると思うけど念のため */
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px 16px;
+  width: 960px;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 16px;
 }
 
 .site-title {
   margin: 0;
   font-size: 24px;
-  margin-right: auto;
 }
 
 .site-title a {
   color: #fff;
-}
-
-.site-nav {
-  display: flex;
-  gap: 8px;
-  margin-left: auto;
-}
-
-.nav-link {
-  font-size: 13px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.08);
-  color: #fff;
-}
-
-.nav-link:hover {
-  text-decoration: none;
-  background: rgba(255,255,255,0.16);
-}
-
-.nav-post {
-  background: #1a73e8;
-}
-
-.nav-post:hover {
-  background: #1558ad;
 }
 
 .site-description {
@@ -243,6 +214,26 @@ a:hover {
   font-size: 14px;
   border-radius: 6px;
   border: 1px solid #ccc;
+}
+
+.post-submit-section {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.post-submit-button {
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 8px;
+  background: #1a73e8;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.post-submit-button:hover {
+  background: #1558ad;
 }
 
 .post-primary-button {

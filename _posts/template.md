@@ -3,7 +3,7 @@ layout: post
 title: 記事タイトル（ここを変更）
 date: YYYY-MM-DD HH:MM:SS +0900
 author: あなたの名前
-tags: [hsp3]
+tags: [HSP3, 関連タグ]
 summary: 記事の概要をここに書く（120文字以内）
 ---
 
