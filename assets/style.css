@@ -142,23 +142,56 @@ a:hover {
   overflow-x: auto;
   font-size: 13px;
   position: relative;
-  counter-reset: line;
-  padding-left: 50px; /* 行番号用スペース */
 }
 
 .post-content pre code {
-  counter-increment: line;
+  display: block;
 }
 
-.post-content pre code::before {
-  content: counter(line);
-  position: absolute;
-  left: 8px;
+.line-number {
+  display: inline-block;
   width: 30px;
+  padding-right: 12px;
+  margin-right: 12px;
   text-align: right;
   color: #888;
   font-size: 12px;
   user-select: none;
+  border-right: 1px solid #444;
+}
+
+/* Syntax Highlighting (Rouge) */
+.highlight .c1 { color: #75715e; } /* Comment */
+.highlight .k { color: #66d9ef; } /* Keyword */
+.highlight .n { color: #f8f8f2; } /* Name */
+.highlight .p { color: #f8f8f2; } /* Punctuation */
+.highlight .kt { color: #66d9ef; } /* Keyword Type */
+.highlight .nf { color: #a6e22e; } /* Name Function */
+.highlight .s { color: #e6db74; } /* String */
+.highlight .mi { color: #ae81ff; } /* Number Integer */
+.highlight .o { color: #f92672; } /* Operator */
+.highlight .nb { color: #f8f8f2; } /* Name Builtin */
+.highlight .m { color: #ae81ff; } /* Number */
+
+/* HSP Syntax Highlighting */
+.hsp-comment {
+  color: #7cfc00; /* ライムグリーン */
+  font-style: italic;
+}
+
+.hsp-prep {
+  color: #d17d49; /* オレンジ */
+  font-weight: bold;
+}
+
+.hsp-macro {
+  color: #7eb3d4; /* 薄い青 */
+}
+
+.hsp-instr,
+.hsp-func {
+  color: #0099ff; /* 濃いめの青 */
+  font-weight: bold;
 }
 
 .copy-button {

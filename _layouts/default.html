@@ -26,10 +26,80 @@
   </footer>
 
   <script>
+    // HSP命令・関数リスト（濃いめの青）
+    const hspInstructions = new Set([
+      'comevarg', 'comevent', 'delcom', 'newcom', 'querycom', 'sarrayconv',
+      'assert', 'logmes', 'logmesv', 'logmesva', 'varprop',
+      'button', 'chkbox', 'clrobj', 'combox', 'input', 'layerobj', 'listbox', 'mesbox',
+      'objcolor', 'objenable', 'objimage', 'objmode', 'objprm', 'objsel', 'objsize', 'objskip',
+      'bcopy', 'bload', 'bsave', 'chdir', 'chdpm', 'delete', 'dirlist', 'exist', 'memfile', 'mkdir',
+      'await', 'break', 'continue', 'else', 'end', 'exec', 'exgoto', 'foreach', 'gosub', 'goto',
+      'if', 'loop', 'on', 'onclick', 'oncmd', 'onerror', 'onexit', 'onkey', 'repeat', 'return',
+      'run', 'stop', 'wait',
+      'mci', 'mmload', 'mmplay', 'mmstop',
+      'alloc', 'comres', 'ddim', 'delmod', 'dim', 'dimtype', 'ldim', 'lpoke', 'memcpy', 'memexpand',
+      'memset', 'newlab', 'newmod', 'poke', 'sdim', 'wpoke',
+      'getkey', 'mcall', 'mouse', 'randomize', 'setease', 'sortget', 'sortnote', 'sortstr', 'sortval', 'stick',
+      'mmpan', 'mmstat', 'mmvol',
+      'cnvstoa', 'cnvstow', 'getstr', 'noteadd', 'notedel', 'noteget', 'noteload', 'notesave', 'notesel',
+      'noteunsel', 'split', 'strexchange', 'strrep',
+      'axobj', 'bgscr', 'bmpsave', 'boxf', 'buffer', 'celdiv', 'celload', 'celput', 'chgdisp', 'circle',
+      'cls', 'color', 'dialog', 'font', 'gcopy', 'gmode', 'gradf', 'grect', 'groll', 'grotate', 'gsel',
+      'gsquare', 'gzoom', 'hsvcolor', 'line', 'mes', 'palcolor', 'palette', 'pget', 'picload', 'pos',
+      'print', 'pset', 'redraw', 'rgbcolor', 'screen', 'sendmsg', 'syscolor', 'sysfont', 'title', 'width', 'winobj'
+    ]);
+
+    // HSP関数リスト（濃いめの青）
+    const hspFunctions = new Set([
+      'comevdisp',
+      'abs', 'absf', 'atan', 'callfunc', 'cos', 'dirinfo', 'double', 'expf', 'getease', 'geteasef',
+      'gettime', 'ginfo', 'int', 'length', 'length2', 'length3', 'length4', 'libptr', 'limit', 'limitf',
+      'logf', 'objinfo', 'powf', 'rnd', 'sin', 'sqrt', 'str', 'strlen', 'sysinfo', 'tan', 'varptr',
+      'varsize', 'vartype', 'varuse',
+      'cnvatos', 'cnvwtos', 'getpath', 'instr', 'notefind', 'noteinfo', 'strf', 'strmid', 'strtrim',
+      'lpeek', 'peek', 'wpeek',
+      'dup', 'dupptr', 'mref'
+    ]);
+
+    // HSPマクロ（薄い青）
+    const hspMacros = new Set([
+      '_break', '_continue', 'case', 'default', 'do', 'for', 'next', 'swbreak', 'swend', 'switch',
+      'until', 'wend', 'while',
+      '__date__', '__file__', '__hsp30__', '__hspver__', '__line__', '__time__', '_debug',
+      'and', 'deg2rad', 'font_antialias', 'font_bold', 'font_italic', 'font_normal', 'font_strikeout',
+      'font_underline', 'gmode_add', 'gmode_alpha', 'gmode_gdi', 'gmode_mem', 'gmode_pixela',
+      'gmode_rgb0', 'gmode_rgb0alpha', 'gmode_sub', 'not', 'objinfo_bmscr', 'objinfo_hwnd',
+      'objinfo_mode', 'objmode_guifont', 'objmode_normal', 'objmode_usecolor', 'objmode_usefont',
+      'or', 'rad2deg', 'screen_fixedsize', 'screen_frame', 'screen_hide', 'screen_normal',
+      'screen_palette', 'screen_tool', 'xor',
+      'M_PI', 'cnt', 'dir_cmdline', 'dir_cur', 'dir_desktop', 'dir_exe', 'dir_mydoc', 'dir_sys',
+      'dir_tv', 'dir_win', 'err', 'ginfo_accelx', 'ginfo_accely', 'ginfo_accelz', 'ginfo_act',
+      'ginfo_b', 'ginfo_cx', 'ginfo_cy', 'ginfo_dispx', 'ginfo_dispy', 'ginfo_g', 'ginfo_gyrox',
+      'ginfo_gyroy', 'ginfo_gyroz', 'ginfo_intid', 'ginfo_mesx', 'ginfo_mesy', 'ginfo_mx', 'ginfo_my',
+      'ginfo_newid', 'ginfo_paluse', 'ginfo_r', 'ginfo_sel', 'ginfo_sizex', 'ginfo_sizey', 'ginfo_sx',
+      'ginfo_sy', 'ginfo_vx', 'ginfo_vy', 'ginfo_winx', 'ginfo_winy', 'ginfo_wx1', 'ginfo_wx2',
+      'ginfo_wy1', 'ginfo_wy2', 'hdc', 'hinstance', 'hspstat', 'hspver', 'hwnd', 'iparam', 'looplev',
+      'lparam', 'mousew', 'mousex', 'mousey', 'msgothic', 'msmincho', 'notemax', 'notesize', 'refdval',
+      'refstr', 'stat', 'strsize', 'sublev', 'thismod', 'wparam'
+    ]);
+
+    // HSPプリプロセッサ
+    const hspPreprocessor = new Set([
+      '#addition', '#aht', '#ahtmes', '#bootopt', '#cfunc', '#cmd', '#cmpopt', '#comfunc', '#const',
+      '#defcfunc', '#deffunc', '#define', '#else', '#endif', '#enum', '#epack', '#epackdir',
+      '#func', '#global', '#if', '#ifdef', '#ifndef', '#include', '#modcfunc', '#modfunc', '#modinit',
+      '#modterm', '#module', '#pack', '#packdir', '#packopt', '#regcmd', '#runtime', '#undef', '#use',
+      '#usecom', '#uselib', '#var', '#vardouble', '#varint', '#varlabel', '#varstr'
+    ]);
+
     // コードブロックにコピーボタンと行数表示を追加
     document.addEventListener('DOMContentLoaded', function() {
       const codeBlocks = document.querySelectorAll('pre');
       codeBlocks.forEach((pre, index) => {
+        const code = pre.querySelector('code');
+        const classList = code ? code.className : '';
+        const isHSP = classList.includes('language-hsp');
+
         // コピーボタン追加
         const copyButton = document.createElement('button');
         copyButton.textContent = 'コピー';
@@ -46,10 +116,16 @@
         pre.style.position = 'relative';
         pre.appendChild(copyButton);
 
-        // 行数表示
-        const code = pre.querySelector('code');
+        // 行数表示（ハイライト済みHTMLを保持）
         if (code) {
-          const lines = code.textContent.split('\n');
+          let html = code.innerHTML;
+          
+          // HSP言語用のシンタックスハイライト適用
+          if (isHSP) {
+            html = highlightHSP(html);
+          }
+          
+          const lines = html.split('\n');
           const numberedCode = lines.map((line, i) => 
             `<span class="line-number">${i + 1}</span>${line}`
           ).join('\n');
@@ -57,6 +133,99 @@
         }
       });
     });
+
+    // HSP言語用ハイライト関数
+    function highlightHSP(html) {
+      // テキストノードのみを処理してハイライト
+      const div = document.createElement('div');
+      div.innerHTML = html;
+      
+      processNode(div);
+      
+      return div.innerHTML;
+    }
+
+    // ノード処理関数
+    function processNode(node) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        const text = node.textContent;
+        const span = document.createElement('span');
+        span.innerHTML = highlightText(text);
+        node.parentNode.replaceChild(span, node);
+      } else if (node.nodeType === Node.ELEMENT_NODE && node.tagName !== 'SPAN') {
+        // 既存の<span>タグは保持、その中のテキストは処理しない
+        const children = Array.from(node.childNodes);
+        children.forEach(child => {
+          if (child.nodeType === Node.TEXT_NODE) {
+            const text = child.textContent;
+            const wrapper = document.createElement('span');
+            wrapper.innerHTML = highlightText(text);
+            child.parentNode.replaceChild(wrapper, child);
+          } else if (child.nodeType === Node.ELEMENT_NODE) {
+            processNode(child);
+          }
+        });
+      }
+    }
+
+    // テキストハイライト関数
+    function highlightText(text) {
+      let result = text;
+
+      // コメント処理（優先度高）
+      // 1. /* */ ブロックコメント
+      result = result.replace(/\/\*[\s\S]*?\*\//g, match => 
+        `<span class="hsp-comment">${match}</span>`
+      );
+
+      // 2. // コメント（行末まで）
+      result = result.replace(/\/\/.*$/gm, match => 
+        `<span class="hsp-comment">${match}</span>`
+      );
+
+      // 3. ; コメント（行末まで）
+      result = result.replace(/;.*$/gm, match => 
+        `<span class="hsp-comment">${match}</span>`
+      );
+
+      // プリプロセッサ指令（#で始まる）
+      result = result.replace(/#[a-zA-Z_]\w*/g, match => 
+        `<span class="hsp-prep">${match}</span>`
+      );
+
+      // マクロ
+      hspMacros.forEach(macro => {
+        const regex = new RegExp(`\\b(${macro})\\b`, 'g');
+        result = result.replace(regex, `<span class="hsp-macro">$1</span>`);
+      });
+
+      // 関数
+      hspFunctions.forEach(func => {
+        const regex = new RegExp(`\\b(${func})\\b`, 'g');
+        result = result.replace(regex, `<span class="hsp-func">$1</span>`);
+      });
+
+      // 命令
+      hspInstructions.forEach(instr => {
+        const regex = new RegExp(`\\b(${instr})\\b`, 'g');
+        result = result.replace(regex, `<span class="hsp-instr">$1</span>`);
+      });
+
+      return result;
+    }
+
+    // HTML エスケープ関数
+    function escapeHtml(text) {
+      const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      };
+      return text.replace(/[&<>"']/g, m => map[m]);
+    }
+  </script>
 
     // 行数表示のスタイル
     const style = document.createElement('style');
@@ -71,7 +240,7 @@
         margin-right: 8px;
       }
       pre {
-        padding-left: 50px !important;
+        padding-left: 10px !important;
       }
     `;
     document.head.appendChild(style);
