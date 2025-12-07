@@ -227,21 +227,47 @@ jobs:
             fi
           done < changed_files.txt
 
-      # 4. マージ実行
-      - name: Merge
+      # 4. Approve & Merge: 先にApproveを行い、その後マージを試行します
+      - name: Approve and Merge
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            await github.rest.pulls.merge({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: ${{ steps.pr.outputs.number }},
-              merge_method: 'squash'
-            });
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: ${{ steps.pr.outputs.number }},
-              body: '🎉 記事を公開しました！'
-            });
+            const prNumber = ${{ steps.pr.outputs.number }};
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+
+            // 1) Approve (レビューとして承認)
+            try {
+              await github.rest.pulls.createReview({
+                owner: owner,
+                repo: repo,
+                pull_number: prNumber,
+                event: 'APPROVE',
+                body: '🤖 自動検証を通過したため承認します。'
+              });
+              console.log('✅ PR approved');
+            } catch (error) {
+              console.log('⚠️ Approval failed: ' + error.message);
+              // 承認が既に存在する、または権限不足などで失敗することがあるが、続行
+            }
+
+            // 2) Merge
+            try {
+              await github.rest.pulls.merge({
+                owner: owner,
+                repo: repo,
+                pull_number: prNumber,
+                merge_method: 'squash'
+              });
+
+              await github.rest.issues.createComment({
+                owner: owner,
+                repo: repo,
+                issue_number: prNumber,
+                body: '🎉 記事を公開しました！'
+              });
+            } catch (error) {
+              // マージに失敗した場合はApproveは残るため、明示的に失敗として通知
+              core.setFailed('❌ マージに失敗しました。承認は完了しています。手動でマージしてください。\nエラー: ' + error.message);
+            }
