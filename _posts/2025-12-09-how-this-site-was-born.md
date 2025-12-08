@@ -95,7 +95,7 @@ HSP-Knowledge/
 
 ### 1. Qiita風デザイン
 
-<img alt="image" src="https://github.com/user-attachments/assets/b108545c-2932-4a90-bfc7-a318ffdf3fc5" />
+<img width="100%" alt="image" src="https://github.com/user-attachments/assets/b108545c-2932-4a90-bfc7-a318ffdf3fc5" />
 
 - 左サイドバー：タグ一覧
 - メインコンテンツ：記事カード
