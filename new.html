@@ -176,7 +176,8 @@ title: 新規記事を作成
         <div class="metadata-field full-width">
           <label for="meta-filename">ファイル名（英数字、ハイフン、アンダースコアのみ）</label>
           <input type="text" id="meta-filename" placeholder="例: my-first-article">
-          <small style="color: #666; font-size: 11px; margin-top: 4px;">※ 日付とmdは自動付与されます（例: 2025-12-09-my-first-article.md）</small>
+          <div id="filename-preview" style="margin-top: 4px; font-size: 12px; color: #666;"></div>
+          <small style="color: #666; font-size: 11px; margin-top: 4px;">※ 日付と.mdは自動付与されます</small>
         </div>
         <div class="metadata-field">
           <label for="meta-title">タイトル <span style="color: red;">*</span></label>
@@ -235,6 +236,27 @@ title: 新規記事を作成
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+  const filenameInput = document.getElementById('meta-filename');
+  const filenamePreview = document.getElementById('filename-preview');
+
+  // ファイル名プレビューの更新
+  function updateFilenamePreview() {
+    const filename = filenameInput.value.trim().replace(/\.md$/, '');
+    if (filename) {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const dateStr = year + '-' + month + '-' + day;
+      const fullFilename = dateStr + '-' + filename + '.md';
+      filenamePreview.textContent = '新規ファイル名は ' + fullFilename + ' になります';
+    } else {
+      filenamePreview.textContent = '';
+    }
+  }
+
+  filenameInput.addEventListener('input', updateFilenamePreview);
+
   // Toast UI Editorを初期化
   const editor = new toastui.Editor({
     el: document.querySelector('#editor'),
@@ -264,10 +286,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const bodyContent = editor.getMarkdown();
 
     // メタデータを取得
-    const filename = document.getElementById('meta-filename').value.trim();
+    let filename = document.getElementById('meta-filename').value.trim();
     const title = document.getElementById('meta-title').value.trim();
     const author = document.getElementById('meta-author').value.trim();
     const summary = document.getElementById('meta-summary').value.trim();
+
+    // .md拡張子を自動除去
+    filename = filename.replace(/\.md$/, '');
 
     // タグを収集（チェックボックス + カスタムタグ）
     const selectedTags = [];
